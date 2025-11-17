@@ -217,4 +217,3 @@ Need this README tailored to your project? Provide:
 - Example endpoints or CLI usage
 - License and author info
 
-I'll update the README with your specific details and add badges, CI, and a sample contribution template.

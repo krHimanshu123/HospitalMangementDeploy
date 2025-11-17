@@ -1,0 +1,22 @@
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+
+# Install git so we can clone the backend repo inside the build image
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Clone the backend repository and build using Maven
+RUN git clone https://github.com/krHimanshu123/hospitalBackend.git .
+
+# Use maven to build the jar (skip tests for speed)
+RUN mvn clean package -DskipTests
+
+# Runtime image: lightweight JRE
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Copy the built jar from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+ENV JAVA_OPTS=""
+EXPOSE 8081
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar app.jar"]
